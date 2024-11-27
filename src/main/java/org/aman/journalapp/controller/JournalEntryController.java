@@ -39,7 +39,6 @@ public class JournalEntryController {
         }
     }
 
-    @Transactional
     @PostMapping("{userName}")
     public ResponseEntity<JournalEntry> createJournal(@RequestBody JournalEntry newEntry, @PathVariable String userName){
         try{

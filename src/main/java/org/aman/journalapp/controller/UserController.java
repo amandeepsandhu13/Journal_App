@@ -34,11 +34,6 @@ public class UserController {
         return new ResponseEntity<>(userService.findUserByUsername(username), HttpStatus.OK);
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user){
-          return  userService.createUser(user);
-    }
-
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestParam String userName, @RequestBody User newUser){
            User userDb = userService.findUserByUsername(userName);
