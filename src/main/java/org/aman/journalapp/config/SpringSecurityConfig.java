@@ -33,7 +33,7 @@ public class SpringSecurityConfig{
            return http.authorizeHttpRequests(request -> request
                    // .requestMatchers("/journal/**").permitAll()
                     .requestMatchers("/journal/**","/user/**").authenticated()
-                    .requestMatchers("/admin/**").hasRole("Admin")
+                      .requestMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().permitAll())
                     .httpBasic(Customizer.withDefaults())
                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -50,10 +50,10 @@ public class SpringSecurityConfig{
         return authProvider;
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+//        return authConfig.getAuthenticationManager();
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
