@@ -3,11 +3,14 @@ package org.aman.journalapp.Repository;
 import org.aman.journalapp.entity.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface UserRepo extends MongoRepository<User, ObjectId> {
-    User findByUserName(String username);
+    Optional<User> findByUserName(String username);
 
     void deleteByUserName(String username);
 }

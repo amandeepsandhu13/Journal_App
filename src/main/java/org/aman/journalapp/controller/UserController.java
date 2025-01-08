@@ -1,6 +1,8 @@
 package org.aman.journalapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.aman.journalapp.Repository.UserRepo;
+import org.aman.journalapp.customException.UserNotFoundException;
 import org.aman.journalapp.entity.User;
 import org.aman.journalapp.service.UserService;
 import org.bson.types.ObjectId;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name="User APIs", description = "Read, Update, Delete User")
 public class UserController {
 
     @Autowired
@@ -39,21 +42,25 @@ public class UserController {
     public ResponseEntity<User> getUserByUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return new ResponseEntity<>(userService.findUserByUsername(username), HttpStatus.OK);
+        User user = userService.findUserByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found") );
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User newUser){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        User userDb = userService.findUserByUsername(userName);
-        if(userDb != null){
+        User userDb = userService.findUserByUsername(userName).orElseThrow(()->new RuntimeException("User Not Found"));
+        // Update the user details
+        if (!newUser.getUserName().isEmpty()) {
             userDb.setUserName(newUser.getUserName());
-            userDb.setPassword(newUser.getPassword());
-            userService.createUser(userDb);
         }
 
-               return new ResponseEntity<>("user updated successfully",HttpStatus.ACCEPTED);
+        if (!newUser.getPassword().isEmpty()) {
+            userDb.setPassword(newUser.getPassword());
+        }
+            userService.createUser(userDb);
+            return new ResponseEntity<>("user updated successfully",HttpStatus.ACCEPTED);
 
     }
 

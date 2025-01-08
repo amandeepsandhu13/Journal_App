@@ -4,15 +4,17 @@ import org.aman.journalapp.Repository.UserRepo;
 import org.aman.journalapp.entity.User;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 public class UserService {
 
     @Autowired
@@ -45,7 +47,7 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public User findUserByUsername(String username){
+    public Optional<User> findUserByUsername(String username){
         return userRepo.findByUserName(username);
     }
 

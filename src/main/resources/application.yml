@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://samandeepkaur34:TdBE4pVPt89diSJE@cluster0.4vwqk.mongodb.net/?retryWrites=true&w=majority&appNa
+      uri: mongodb+srv://samandeepkaur34:TdBE4pVPt89diSJE@cluster0.4vwqk.mongodb.net/?retryWrites=true&w=majority&&appName=Cluster0
       database: journaldatabase
       auto-index-creation: true
   main:
@@ -9,7 +9,21 @@ spring:
   application:
     name: Journal App
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+#logging:
+#  level:
+#    root: DEBUG
+#    org.springdoc: DEBUG
+#    org.springframework.web: DEBUG
+
 server:
   port: 8080
   servlet:
     context-path: /journal
+
+
