@@ -1,5 +1,6 @@
 package org.aman.journalapp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.aman.journalapp.entity.JournalEntry;
 import org.aman.journalapp.entity.User;
 import org.aman.journalapp.service.JournalEntryService;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name="Journal APIs")
 public class JournalEntryController {
 
     @Autowired
@@ -31,11 +34,11 @@ public class JournalEntryController {
     public ResponseEntity<List<JournalEntry>> getAllJournalEntriesByUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        User user = userService.findUserByUsername(userName);
-        if(user == null){
+        Optional<User> user = userService.findUserByUsername(userName);
+        if(user.isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        List<JournalEntry> journalEntries = user.getJournalEntries();
+        List<JournalEntry> journalEntries = user.get().getJournalEntries();
         if(journalEntries.size() > 0){
             return new ResponseEntity<>(journalEntries, HttpStatus.OK);
         }else {
@@ -60,7 +63,9 @@ public class JournalEntryController {
     public ResponseEntity<JournalEntry> getEntryById(@PathVariable ObjectId myId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        User user = userService.findUserByUsername(userName);
+        User user = userService.findUserByUsername(userName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+
         List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(myId)).collect(Collectors.toList());
         if (!collect.isEmpty()) {
             Optional<JournalEntry> journalEntry = journalEntryService.getEntryById(myId);
@@ -86,7 +91,9 @@ public class JournalEntryController {
                                                         @RequestBody JournalEntry newEntry){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        User user = userService.findUserByUsername(userName);
+        User user = userService.findUserByUsername(userName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+
         List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(myId)).collect(Collectors.toList());
         if (!collect.isEmpty()) {
             JournalEntry old = journalEntryService.getEntryById(myId).orElse(null);

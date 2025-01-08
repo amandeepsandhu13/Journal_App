@@ -33,7 +33,8 @@ public class SpringSecurityConfig{
            return http.authorizeHttpRequests(request -> request
                    // .requestMatchers("/journal/**").permitAll()
                     .requestMatchers("/journal/**","/user/**").authenticated()
-                      .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/journal/swagger-ui/**").permitAll()
                     .anyRequest().permitAll())
                     .httpBasic(Customizer.withDefaults())
                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,5 +1,6 @@
 package org.aman.journalapp.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@Builder
 public class User {
     @Id
     private ObjectId id;
@@ -21,6 +23,7 @@ public class User {
     private String userName;
     @NonNull
     private String password;
+    @Builder.Default
     private List<String> roles;
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>();
